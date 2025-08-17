@@ -1,0 +1,6 @@
+name: zVips
+version: '1.0'
+main: me.yleoft.zVips.zVips
+api-version: '1.21'
+load: STARTUP
+authors: [ yLeoft ]
