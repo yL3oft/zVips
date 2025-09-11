@@ -14,27 +14,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GivekeyCompleter extends ConfigUtils implements TabCompleter {
+public class ListkeysCompleter extends ConfigUtils implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
         List<String> completions = new ArrayList<>();
         List<String> commands = new ArrayList<>();
-        if (!(s instanceof Player) || !s.hasPermission(CmdGivekeyPermission()))
+        if (!(s instanceof Player) || !s.hasPermission(CmdListkeysPermission()))
             return completions;
         Player p = (Player)s;
         if (args.length == 1) {
+            commands.add("server");
             Bukkit.getOnlinePlayers().forEach(on -> commands.add(on.getName()));
             StringUtil.copyPartialMatches(args[0], commands, completions);
-        } else if (args.length == 2) {
-            VIPUtils.vipsCache.values().forEach(vip -> commands.add(vip.getName()));
-            StringUtil.copyPartialMatches(args[1], commands, completions);
-        } else if (args.length == 3) {
-            commands.add("[duration]");
-            StringUtil.copyPartialMatches(args[2], commands, completions);
-        } else if (args.length == 4) {
-            commands.add("[uses]");
-            StringUtil.copyPartialMatches(args[3], commands, completions);
         }
         Collections.sort(commands);
         return completions;

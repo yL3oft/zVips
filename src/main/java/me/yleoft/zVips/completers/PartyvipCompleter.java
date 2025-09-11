@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PointsvipCompleter extends ConfigUtils implements TabCompleter {
+public class PartyvipCompleter extends ConfigUtils implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
@@ -23,21 +23,13 @@ public class PointsvipCompleter extends ConfigUtils implements TabCompleter {
             return completions;
         Player p = (Player)s;
         if (args.length == 1) {
-            if (p.hasPermission(CmdPointsvipManagePermission())) {
+            if (p.hasPermission(CmdPartyvipManagePermission())) {
                 commands.add("set");
                 commands.add("add");
                 commands.add("remove");
                 commands.add("reset");
             }
-            if(p.hasPermission(CmdPointsvipOthersPermission())) {
-                Bukkit.getOnlinePlayers().forEach(player -> commands.add(player.getName()));
-            }
             StringUtil.copyPartialMatches(args[0], commands, completions);
-        } else if (args.length == 2) {
-            if(p.hasPermission(CmdPointsvipManagePermission())) {
-                Bukkit.getOnlinePlayers().forEach(player -> commands.add(player.getName()));
-            }
-            StringUtil.copyPartialMatches(args[1], commands, completions);
         }
         Collections.sort(commands);
         return completions;

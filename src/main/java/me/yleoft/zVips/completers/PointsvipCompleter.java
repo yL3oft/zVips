@@ -1,6 +1,7 @@
 package me.yleoft.zVips.completers;
 
 import me.yleoft.zVips.utils.ConfigUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainCompleter extends ConfigUtils implements TabCompleter {
+public class PointsvipCompleter extends ConfigUtils implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
@@ -22,38 +23,19 @@ public class MainCompleter extends ConfigUtils implements TabCompleter {
             return completions;
         Player p = (Player)s;
         if (args.length == 1) {
-            if (p.hasPermission(CmdMainReloadPermission()))
-                commands.add("reload");
-            if (p.hasPermission(CmdMainVersionPermission()))
-                commands.add("version");
+            if (p.hasPermission(CmdPointsvipManagePermission())) {
+                commands.add("set");
+                commands.add("add");
+                commands.add("remove");
+                commands.add("reset");
+            }
+            if(p.hasPermission(CmdPointsvipOthersPermission())) {
+                Bukkit.getOnlinePlayers().forEach(player -> commands.add(player.getName()));
+            }
             StringUtil.copyPartialMatches(args[0], commands, completions);
         } else if (args.length == 2) {
-            switch (args[0]) {
-                case "reload":
-                case "rl": {
-                    if (p.hasPermission(CmdMainReloadPermission())) {
-                        commands.add("all");
-                        commands.add("commands");
-                        commands.add("config");
-                        commands.add("languages");
-                    }
-                    break;
-                }
-                case "converter": {
-                    if (p.hasPermission(CmdMainConverterPermission())) {
-                        commands.add("sqlitetoh2");
-                        commands.add("sqlitetomysql");
-                        commands.add("sqlitetomariadb");
-                        commands.add("mysqltosqlite");
-                        commands.add("mysqltoh2");
-                        commands.add("mariadbtosqlite");
-                        commands.add("mariadbtoh2");
-                        commands.add("h2tosqlite");
-                        commands.add("h2tomysql");
-                        commands.add("h2tomariadb");
-                    }
-                    break;
-                }
+            if(p.hasPermission(CmdPointsvipManagePermission())) {
+                Bukkit.getOnlinePlayers().forEach(player -> commands.add(player.getName()));
             }
             StringUtil.copyPartialMatches(args[1], commands, completions);
         }

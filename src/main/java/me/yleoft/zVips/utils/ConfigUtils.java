@@ -1,35 +1,31 @@
-package me.yleoft.zTPA.utils;
+package me.yleoft.zVips.utils;
 
 import me.yleoft.zAPI.utils.StringUtils;
-import me.yleoft.zTPA.zTPA;
+import me.yleoft.zVips.zVips;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 public class ConfigUtils {
-    private static final zTPA main = zTPA.getInstance();
+    private static final zVips main = zVips.getInstance();
 
     protected String cmdPath = "commands.";
     protected String permissionsPath = "permissions.";
     protected String permissionsBypassPath = permissionsPath+"bypass.";
     protected String databasePath = "database.";
-    protected String lim = "limits.";
-    protected String tpo = "tpa-options.";
-    protected String warmup = tpo+"warmup.";
+    protected String vipo = "vip-options.";
+    protected String vipocooldown = vipo+"cooldowns.";
+    protected String partyVip = "party-vip.";
+    protected String partyVipActivation = partyVip+"activation.";
 
     public ConfigUtilsExtras cfguExtras = new ConfigUtilsExtras();
 
     public static String langType() {
         return main.getConfig().getString("general.language");
-    }
-    public Boolean isAutoUpdate() {
-        return main.getConfig().getBoolean("general.auto-update");
-    }
-    public Boolean doAnnounceUpdate() {
-        return main.getConfig().getBoolean("general.announce-update");
     }
     public Boolean hasMetrics() {
         return main.getConfig().getBoolean("general.metrics");
@@ -37,25 +33,80 @@ public class ConfigUtils {
     public String prefix() {
         return StringUtils.transform(requireNonNull(main.getConfig().getString("prefix")));
     }
+    public Boolean enableLogs() {
+        return main.getConfig().getBoolean("general.enable-logs");
+    }
+
+    //<editor-fold desc="Database">
+    public String databaseType() {
+        return main.getConfig().getString(this.databasePath + "type");
+    }
+    public String databaseHost() {
+        return main.getConfig().getString(this.databasePath + "host");
+    }
+    public Integer databasePort() {
+        return main.getConfig().getInt(this.databasePath + "port");
+    }
+    public String databaseDatabase() {
+        return main.getConfig().getString(this.databasePath + "database");
+    }
+    public String databaseUsername() {
+        return main.getConfig().getString(this.databasePath + "username");
+    }
+    public String databasePassword() {
+        return main.getConfig().getString(this.databasePath + "password");
+    }
+    public Boolean databaseUseSSL() {
+        return main.getConfig().getBoolean(this.databasePath + "options.useSSL");
+    }
+    public Boolean databaseAllowPublicKeyRetrieval() {
+        return main.getConfig().getBoolean(this.databasePath + "options.allowPublicKeyRetrieval");
+    }
+    public int databasePoolsize() {
+        return main.getConfig().getInt(this.databasePath + "pool-size");
+    }
+    public String databaseTablePrefix() {
+        return requireNonNull(main.getConfig().getString(this.databasePath + "table-prefix")).toLowerCase();
+    }
+    public String databaseTable() {
+        return databaseTablePrefix()+"_keys";
+    }
+    public String databaseTable2() {
+        return databaseTablePrefix()+"_players";
+    }
+    public String databaseTable3() {
+        return databaseTablePrefix()+"_vips";
+    }
+    public String databaseTable4() {
+        return databaseTablePrefix()+"_settings";
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Plugin Information">
-    public int tpaExpireTime() {
-        return main.getConfig().getInt(this.tpo + "expire-time") > 0 ? main.getConfig().getInt(this.tpo + "expire-time") : 120;
+    public boolean requireConfirmationForKey() {
+        return main.getConfig().getBoolean(vipo+"require-confirmation-for-key");
     }
-    public boolean playSound() {
-        return main.getConfig().getBoolean(this.tpo + "play-sound");
+    public boolean requireEmptyInventory() {
+        return main.getConfig().getBoolean(vipo+"require-empty-inventory");
     }
-    public boolean doWarmup() {
-        return main.getConfig().getBoolean(this.warmup + "enable");
+    public boolean decreaseInactiveVips() {
+        return main.getConfig().getBoolean(vipo+"decrease-inactive-vips");
     }
-    public int warmupTime() {
-        return main.getConfig().getInt(this.warmup + "time");
+    public int changevipCooldown() {
+        return main.getConfig().getInt(vipocooldown+"changevip") >= 0 ? main.getConfig().getInt(vipocooldown+"changevip") : 600;
     }
-    public boolean warmupCancelOnMove() {
-        return main.getConfig().getBoolean(this.warmup + "cancel-on-move");
+    public int transferkeyCooldown() {
+        return main.getConfig().getInt(vipocooldown+"transferkey") >= 0 ? main.getConfig().getInt(vipocooldown+"transferkey") : 600;
     }
-    public boolean warmupShowOnActionbar() {
-        return main.getConfig().getBoolean(this.warmup + "show-on-actionbar");
+    //</editor-fold>
+
+    //<editor-fold desc="Party Vip">
+    public int pvipObjective() {
+        return main.getConfig().getInt(partyVip+"objective") > 0 ? main.getConfig().getInt(partyVip+"objective") : 250;
+    }
+    public List<String> pvipCommands() {
+        String path = partyVipActivation+"commands";
+        return main.getConfig().isList(path) ? main.getConfig().getStringList(path) : Collections.singletonList(main.getConfig().getString(path));
     }
     //</editor-fold>
 
@@ -81,100 +132,174 @@ public class ConfigUtils {
     public String CmdMainVersionPermission() {
         return main.getConfig().getString(this.cmdPath + "main.version.permission");
     }
-    public String CmdMainVersionUpdatePermission() {
-        return main.getConfig().getString(this.cmdPath + "main.version.update.permission");
-    }
     public String CmdMainReloadPermission() {
         return main.getConfig().getString(this.cmdPath + "main.reload.permission");
     }
-    //</editor-fold>
-    //<editor-fold desc="Tpa Command">
-    public String CmdTpaCommand() {
-        return main.getConfig().getString(this.cmdPath + "tpa.command");
+    public String CmdMainConverterPermission() {
+        return main.getConfig().getString(this.cmdPath + "main.converter.permission");
     }
-    public String CmdTpaPermission() {
-        return main.getConfig().getString(this.cmdPath + "tpa.permission");
+    //</editor-fold
+    //<editor-fold desc="Pointsvip Command">
+    public String CmdPointsvipCommand() {
+        return main.getConfig().getString(this.cmdPath + "pointsvip.command");
     }
-    public String CmdTpaDescription() {
-        return main.getConfig().getString(this.cmdPath + "tpa.description");
+    public String CmdPointsvipPermission() {
+        return main.getConfig().getString(this.cmdPath + "pointsvip.permission");
     }
-    public Double CmdTpaCooldown() {
-        return main.getConfig().getDouble(this.cmdPath + "tpa.cooldown");
+    public String CmdPointsvipDescription() {
+        return main.getConfig().getString(this.cmdPath + "pointsvip.description");
     }
-    public List<String> CmdTpaAliases() {
-        return main.getConfig().getStringList(this.cmdPath + "tpa.aliases");
+    public Double CmdPointsvipCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "pointsvip.cooldown");
     }
-    public Float CmdTpaCost() {
-        return (float) main.getConfig().getDouble(this.cmdPath + "tpa.command-cost");
+    public List<String> CmdPointsvipAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "pointsvip.aliases");
     }
-    //</editor-fold>
-    //<editor-fold desc="Tpaccept Command">
-    public String CmdTpacceptCommand() {
-        return main.getConfig().getString(this.cmdPath + "tpaccept.command");
+    public String CmdPointsvipOthersPermission() {
+        return main.getConfig().getString(this.cmdPath + "pointsvip.others.permission");
     }
-    public String CmdTpacceptPermission() {
-        return main.getConfig().getString(this.cmdPath + "tpaccept.permission");
+    public String CmdPointsvipManagePermission() {
+        return main.getConfig().getString(this.cmdPath + "pointsvip.manage.permission");
     }
-    public String CmdTpacceptDescription() {
-        return main.getConfig().getString(this.cmdPath + "tpaccept.description");
+    //</editor-fold
+    //<editor-fold desc="Partyvip Command">
+    public String CmdPartyvipCommand() {
+        return main.getConfig().getString(this.cmdPath + "partyvip.command");
     }
-    public Double CmdTpacceptCooldown() {
-        return main.getConfig().getDouble(this.cmdPath + "tpaccept.cooldown");
+    public String CmdPartyvipPermission() {
+        return main.getConfig().getString(this.cmdPath + "partyvip.permission");
     }
-    public List<String> CmdTpacceptAliases() {
-        return main.getConfig().getStringList(this.cmdPath + "tpaccept.aliases");
+    public String CmdPartyvipDescription() {
+        return main.getConfig().getString(this.cmdPath + "partyvip.description");
     }
-    public Float CmdTpacceptCost() {
-        return (float) main.getConfig().getDouble(this.cmdPath + "tpaccept.command-cost");
+    public Double CmdPartyvipCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "partyvip.cooldown");
     }
-    //</editor-fold>
-    //<editor-fold desc="Tpdeny Command">
-    public String CmdTpdenyCommand() {
-        return main.getConfig().getString(this.cmdPath + "tpdeny.command");
+    public List<String> CmdPartyvipAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "partyvip.aliases");
     }
-    public String CmdTpdenyPermission() {
-        return main.getConfig().getString(this.cmdPath + "tpdeny.permission");
-    }
-    public String CmdTpdenyDescription() {
-        return main.getConfig().getString(this.cmdPath + "tpdeny.description");
-    }
-    public Double CmdTpdenyCooldown() {
-        return main.getConfig().getDouble(this.cmdPath + "tpdeny.cooldown");
-    }
-    public List<String> CmdTpdenyAliases() {
-        return main.getConfig().getStringList(this.cmdPath + "tpdeny.aliases");
-    }
-    public Float CmdTpdenyCost() {
-        return (float) main.getConfig().getDouble(this.cmdPath + "tpdeny.command-cost");
+    public String CmdPartyvipManagePermission() {
+        return main.getConfig().getString(this.cmdPath + "partyvip.manage.permission");
     }
     //</editor-fold>
-    //<editor-fold desc="Tpacancel Command">
-    public String CmdTpacancelCommand() {
-        return main.getConfig().getString(this.cmdPath + "tpacancel.command");
+    //<editor-fold desc="Givekey Command">
+    public String CmdGivekeyCommand() {
+        return main.getConfig().getString(this.cmdPath + "givekey.command");
     }
-    public String CmdTpacancelPermission() {
-        return main.getConfig().getString(this.cmdPath + "tpacancel.permission");
+    public String CmdGivekeyPermission() {
+        return main.getConfig().getString(this.cmdPath + "givekey.permission");
     }
-    public String CmdTpacancelDescription() {
-        return main.getConfig().getString(this.cmdPath + "tpacancel.description");
+    public String CmdGivekeyDescription() {
+        return main.getConfig().getString(this.cmdPath + "givekey.description");
     }
-    public Double CmdTpacancelCooldown() {
-        return main.getConfig().getDouble(this.cmdPath + "tpacancel.cooldown");
+    public Double CmdGivekeyCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "givekey.cooldown");
     }
-    public List<String> CmdTpacancelAliases() {
-        return main.getConfig().getStringList(this.cmdPath + "tpacancel.aliases");
+    public List<String> CmdGivekeyAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "givekey.aliases");
     }
-    public Float CmdTpacancelCost() {
-        return (float) main.getConfig().getDouble(this.cmdPath + "tpacancel.command-cost");
+    //</editor-fold>
+    //<editor-fold desc="Genkey Command">
+    public String CmdGenkeyCommand() {
+        return main.getConfig().getString(this.cmdPath + "genkey.command");
+    }
+    public String CmdGenkeyPermission() {
+        return main.getConfig().getString(this.cmdPath + "genkey.permission");
+    }
+    public String CmdGenkeyDescription() {
+        return main.getConfig().getString(this.cmdPath + "genkey.description");
+    }
+    public Double CmdGenkeyCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "genkey.cooldown");
+    }
+    public List<String> CmdGenkeyAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "genkey.aliases");
+    }
+    //</editor-fold>
+    //<editor-fold desc="Listkeys Command">
+    public String CmdListkeysCommand() {
+        return main.getConfig().getString(this.cmdPath + "listkeys.command");
+    }
+    public String CmdListkeysPermission() {
+        return main.getConfig().getString(this.cmdPath + "listkeys.permission");
+    }
+    public String CmdListkeysDescription() {
+        return main.getConfig().getString(this.cmdPath + "listkeys.description");
+    }
+    public Double CmdListkeysCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "listkeys.cooldown");
+    }
+    public List<String> CmdListkeysAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "listkeys.aliases");
+    }
+    public String CmdListkeysOthersPermission() {
+        return main.getConfig().getString(this.cmdPath + "listkeys.others.permission");
+    }
+    //</editor-fold>
+    //<editor-fold desc="Usekey Command">
+    public String CmdUsekeyCommand() {
+        return main.getConfig().getString(this.cmdPath + "usekey.command");
+    }
+    public String CmdUsekeyPermission() {
+        return main.getConfig().getString(this.cmdPath + "usekey.permission");
+    }
+    public String CmdUsekeyDescription() {
+        return main.getConfig().getString(this.cmdPath + "usekey.description");
+    }
+    public Double CmdUsekeyCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "usekey.cooldown");
+    }
+    public List<String> CmdUsekeyAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "usekey.aliases");
+    }
+    public String CmdUsekeyOthersPermission() {
+        return main.getConfig().getString(this.cmdPath + "usekey.others.permission");
+    }
+    //</editor-fold>
+    //<editor-fold desc="Transferkey Command">
+    public String CmdTransferkeyCommand() {
+        return main.getConfig().getString(this.cmdPath + "transferkey.command");
+    }
+    public String CmdTransferkeyPermission() {
+        return main.getConfig().getString(this.cmdPath + "transferkey.permission");
+    }
+    public String CmdTransferkeyDescription() {
+        return main.getConfig().getString(this.cmdPath + "transferkey.description");
+    }
+    public Double CmdTransferkeyCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "transferkey.cooldown");
+    }
+    public List<String> CmdTransferkeyAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "transferkey.aliases");
+    }
+    //</editor-fold>
+    //<editor-fold desc="Deletekey Command">
+    public String CmdDeletekeyCommand() {
+        return main.getConfig().getString(this.cmdPath + "deletekey.command");
+    }
+    public String CmdDeletekeyPermission() {
+        return main.getConfig().getString(this.cmdPath + "deletekey.permission");
+    }
+    public String CmdDeletekeyDescription() {
+        return main.getConfig().getString(this.cmdPath + "deletekey.description");
+    }
+    public Double CmdDeletekeyCooldown() {
+        return main.getConfig().getDouble(this.cmdPath + "deletekey.cooldown");
+    }
+    public List<String> CmdDeletekeyAliases() {
+        return main.getConfig().getStringList(this.cmdPath + "deletekey.aliases");
     }
     //</editor-fold>
 
     //<editor-fold desc="Permissions">
-    public String PermissionBypassWarmup() {
-        return main.getConfig().getString(permissionsBypassPath+"warmup");
+    public String PermissionBypassChangevip() {
+        return main.getConfig().getString(permissionsBypassPath+"changevip");
+    }
+    public String PermissionBypassTransferkey() {
+        return main.getConfig().getString(permissionsBypassPath+"transferkey");
     }
     public String PermissionBypassCommandCost(String commandPermission) {
-        return main.getConfig().getString(permissionsBypassPath+"command-cost")
+        return requireNonNull(main.getConfig().getString(permissionsBypassPath + "command-cost"))
                 .replace("%command_permission%", commandPermission);
     }
     //</editor-fold>
@@ -182,12 +307,12 @@ public class ConfigUtils {
     public static class ConfigUtilsExtras {
 
         public boolean canAfford(Player p, String commandPermission, Float cost) {
-            if(p.hasPermission(zTPA.cfgu.PermissionBypassCommandCost(commandPermission))) {
+            if(p.hasPermission(zVips.cfgu.PermissionBypassCommandCost(commandPermission))) {
                 return true;
             }
-            Economy economy = (Economy) zTPA.economy;
+            Economy economy = (Economy) zVips.economy;
             LanguageUtils.HooksMSG hooks = new LanguageUtils.HooksMSG();
-            if (zTPA.getInstance().getServer().getPluginManager().isPluginEnabled("Vault")) {
+            if (zVips.getInstance().getServer().getPluginManager().isPluginEnabled("Vault")) {
                 if(economy.has(p, cost)) {
                     economy.withdrawPlayer(p, cost);
                     return true;

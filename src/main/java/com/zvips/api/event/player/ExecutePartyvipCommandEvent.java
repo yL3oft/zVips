@@ -5,12 +5,12 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
-public class ExecutePointsvipCommandEvent extends PlayerEvent implements Cancellable {
+public class ExecutePartyvipCommandEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean isCancelled;
 
-    public ExecutePointsvipCommandEvent(Player who) {
+    public ExecutePartyvipCommandEvent(Player who) {
         super(who);
     }
 

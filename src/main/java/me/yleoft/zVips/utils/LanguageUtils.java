@@ -1,13 +1,16 @@
-package me.yleoft.zTPA.utils;
+package me.yleoft.zVips.utils;
 
 import me.yleoft.zAPI.managers.FileManager;
 import me.yleoft.zAPI.mutable.Messages;
 import me.yleoft.zAPI.utils.FileUtils;
-import me.yleoft.zTPA.zTPA;
+import me.yleoft.zVips.constructors.KEY;
+import me.yleoft.zVips.zVips;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,13 +22,11 @@ import static me.yleoft.zAPI.utils.StringUtils.transform;
 
 public class LanguageUtils extends ConfigUtils {
 
-    private static final zTPA main = zTPA.getInstance();
+    private static final zVips main = zVips.getInstance();
     private static FileUtils fuBACKUP = null;
 
     public static String hooks = "hooks";
     public static String cmds = "commands";
-    public static String tpw = "teleport-warmup";
-    public static String worldguard = "worldguard";
     public static String vault = "vault";
 
     public static File f = new File(main.getDataFolder(), "languages/en.yml");
@@ -70,178 +71,6 @@ public class LanguageUtils extends ConfigUtils {
         return returned;
     }
 
-    public static class Tpa implements Commands {
-        public YamlConfiguration cfg;
-
-        public Tpa() {
-            this.cfg = LanguageUtils.getConfigFile();
-        }
-
-        public String getCmd() {
-            return "tpa";
-        }
-
-        public String getUsage() {
-            String path = formPath(cmds, getCmd(), "usage");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getOutput() {
-            return null;
-        }
-
-        public String getOutput(String target) {
-            String path = formPath(cmds, getCmd(), "output");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-
-        public String getYourself() {
-            String path = formPath(cmds, getCmd(), "yourself");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getAlreadyRequested(String target) {
-            String path = formPath(cmds, getCmd(), "already-requested");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-
-        public String getRequestReceived(String sender) {
-            String path = formPath(cmds, getCmd(), "request-received");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", sender)
-                    .replace("%time%", String.valueOf(zTPA.cfgu.tpaExpireTime()));
-        }
-    }
-
-    public static class Tpaccept implements Commands {
-        public YamlConfiguration cfg;
-
-        public Tpaccept() {
-            this.cfg = LanguageUtils.getConfigFile();
-        }
-
-        public String getCmd() {
-            return "tpaccept";
-        }
-
-        public String getUsage() {
-            return null;
-        }
-
-        public String getOutput() {
-            return null;
-        }
-
-        public String getOutput(String target) {
-            String path = formPath(cmds, getCmd(), "output");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-
-        public String getNoRequest() {
-            String path = formPath(cmds, getCmd(), "no-request");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getNoRequestFrom(String target) {
-            String path = formPath(cmds, getCmd(), "no-request-from");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-    }
-
-    public static class Tpdeny implements Commands {
-        public YamlConfiguration cfg;
-
-        public Tpdeny() {
-            this.cfg = LanguageUtils.getConfigFile();
-        }
-
-        public String getCmd() {
-            return "tpdeny";
-        }
-
-        public String getUsage() {
-            return null;
-        }
-
-        public String getOutput() {
-            return null;
-        }
-
-        public String getOutput(String target) {
-            String path = formPath(cmds, getCmd(), "output");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-
-        public String getNoRequest() {
-            String path = formPath(cmds, getCmd(), "no-request");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getNoRequestFrom(String target) {
-            String path = formPath(cmds, getCmd(), "no-request-from");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-    }
-
-    public static class Tpacancel implements Commands {
-        public YamlConfiguration cfg;
-
-        public Tpacancel() {
-            this.cfg = LanguageUtils.getConfigFile();
-        }
-
-        public String getCmd() {
-            return "tpacancel";
-        }
-
-        public String getUsage() {
-            return null;
-        }
-
-        public String getOutput() {
-            String path = formPath(cmds, getCmd(), "output");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getOutputTo(String target) {
-            String path = formPath(cmds, getCmd(), "output-to");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-
-        public String getNoRequest() {
-            String path = formPath(cmds, getCmd(), "no-request");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand());
-        }
-
-        public String getNoRequestTo(String target) {
-            String path = formPath(cmds, getCmd(), "no-request-to");
-            return this.cfg.getString(path)
-                    .replace("%command%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%player%", target);
-        }
-    }
-
     public static class MainCMD implements Commands {
         public YamlConfiguration cfg;
 
@@ -275,19 +104,19 @@ public class LanguageUtils extends ConfigUtils {
             public String getUsage() {
                 String path = formPath(cmds, getCmd(), "help-noperm");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand());
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
             }
 
             public String getUsageWithPerm() {
                 String path = formPath(cmds, getCmd(), "help-perm");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand());
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
             }
 
             public String getOutput() {
                 String path = formPath(cmds, getCmd(), "output");
                 return this.cfg.getString(path)
-                        .replace("%version%", LanguageUtils.main.getDescription().getVersion());
+                        .replace("%version%", zVips.getInstance().pluginVer);
             }
         }
 
@@ -309,38 +138,7 @@ public class LanguageUtils extends ConfigUtils {
             public String getOutput() {
                 String path = formPath(cmds, getCmd(), "output");
                 return this.cfg.getString(path)
-                        .replace("%version%", LanguageUtils.main.getDescription().getVersion());
-            }
-
-            public static class MainVersionUpdate implements Commands {
-                public YamlConfiguration cfg;
-
-                public MainVersionUpdate() {
-                    this.cfg = LanguageUtils.getConfigFile();
-                }
-
-                public String getCmd() {
-                    return "main.version.update";
-                }
-
-                public String getUsage() {
-                    return null;
-                }
-
-                public String getOutput() {
-                    return null;
-                }
-
-                public String getOutput(String newVersion) {
-                    String path = formPath(cmds, getCmd(), "output");
-                    return this.cfg.getString(path)
-                            .replace("%update%", newVersion);
-                }
-
-                public String getNoUpdate() {
-                    String path = formPath(cmds, getCmd(), "no-update");
-                    return this.cfg.getString(path);
-                }
+                        .replace("%version%", zVips.getInstance().pluginVer);
             }
         }
 
@@ -358,7 +156,7 @@ public class LanguageUtils extends ConfigUtils {
             public String getUsage() {
                 String path = formPath(cmds, getCmd(), "usage");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand());
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
             }
 
             public String getOutput() {
@@ -368,60 +166,398 @@ public class LanguageUtils extends ConfigUtils {
             public String getOutput(long time) {
                 String path = formPath(cmds, getCmd(), "output");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand())
+                        .replace("%command%", zVips.cfgu.CmdMainCommand())
                         .replace("%time%", String.valueOf(time));
             }
 
             public String getOutputCommands(long time) {
                 String path = formPath(cmds, getCmd(), "commands.output");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand())
+                        .replace("%command%", zVips.cfgu.CmdMainCommand())
                         .replace("%time%", String.valueOf(time));
             }
 
             public String getOutputConfig(long time) {
                 String path = formPath(cmds, getCmd(), "config.output");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand())
+                        .replace("%command%", zVips.cfgu.CmdMainCommand())
                         .replace("%time%", String.valueOf(time));
             }
 
             public String getOutputLanguages(long time) {
                 String path = formPath(cmds, getCmd(), "languages.output");
                 return this.cfg.getString(path)
-                        .replace("%command%", zTPA.cfgu.CmdMainCommand())
+                        .replace("%command%", zVips.cfgu.CmdMainCommand())
                         .replace("%time%", String.valueOf(time));
+            }
+        }
+
+        public static class MainConverter implements LanguageUtils.Commands {
+            public final YamlConfiguration cfg;
+
+            public MainConverter() {
+                this.cfg = LanguageUtils.getConfigFile();
+            }
+
+            public String getCmd() {
+                return "main.converter";
+            }
+
+            public String getUsage() {
+                String path = formPath(cmds, getCmd(), "usage");
+                return this.cfg.getString(path)
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
+            }
+
+            public String getOutput() {
+                String path = formPath(cmds, getCmd(), "output");
+                return this.cfg.getString(path)
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
+            }
+
+            public String getError() {
+                String path = formPath(cmds, getCmd(), "error");
+                return this.cfg.getString(path)
+                        .replace("%command%", zVips.cfgu.CmdMainCommand());
             }
         }
     }
 
-    public static class TeleportWarmupMSG implements Helper {
-        public YamlConfiguration cfg;
+    public static class Pointsvip implements Commands {
+        public final YamlConfiguration cfg;
 
-        public TeleportWarmupMSG() {
+        public Pointsvip() {
             this.cfg = LanguageUtils.getConfigFile();
         }
 
-        public String getWarmup(int time) {
-            String path = formPath(tpw, "warmup");
+        public String getCmd() {
+            return "pointsvip";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
             return this.cfg.getString(path)
-                    .replace("%time%", String.valueOf(time));
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand());
         }
 
-        public String getWarmupActionbar(int time) {
-            String path = formPath(tpw, "warmup-actionbar");
+        public String getOutput(Player p) {
+            String path = formPath(cmds, getCmd(), "output");
             return this.cfg.getString(path)
-                    .replace("%time%", String.valueOf(time));
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%points%", String.valueOf(zVips.dbe.getPoints(p)));
         }
 
-        public String getCancelled() {
-            String path = formPath(tpw, "cancelled");
-            return this.cfg.getString(path);
+        public String getOutputOthers(OfflinePlayer p) {
+            String path = formPath(cmds, getCmd(), "others.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%player%", Objects.requireNonNull(p.getName()))
+                    .replace("%points%", String.valueOf(zVips.dbe.getPoints(p)));
         }
 
-        public String getCancelledActionbar() {
-            String path = formPath(tpw, "cancelled-actionbar");
-            return this.cfg.getString(path);
+        public String getSet(OfflinePlayer p, int points) {
+            String path = formPath(cmds, getCmd(), "set.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%player%", Objects.requireNonNull(p.getName()))
+                    .replace("%points%", String.valueOf(points));
+        }
+
+        public String getAdd(OfflinePlayer p, int points) {
+            String path = formPath(cmds, getCmd(), "add.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%player%", Objects.requireNonNull(p.getName()))
+                    .replace("%points%", String.valueOf(points));
+        }
+
+        public String getRemove(OfflinePlayer p, int points) {
+            String path = formPath(cmds, getCmd(), "remove.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%player%", Objects.requireNonNull(p.getName()))
+                    .replace("%points%", String.valueOf(points));
+        }
+
+        public String getReset(OfflinePlayer p) {
+            String path = formPath(cmds, getCmd(), "reset.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%player%", Objects.requireNonNull(p.getName()));
+        }
+    }
+
+    public static class Partyvip implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Partyvip() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "partyvip";
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand());
+        }
+
+        public String getOutput() {
+            String path = formPath(cmds, getCmd(), "output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%points%", String.valueOf(zVips.dbe.getPVPoints()))
+                    .replace("%goal%", String.valueOf(zVips.cfgu.pvipObjective()));
+        }
+
+        public String getSet(int points) {
+            String path = formPath(cmds, getCmd(), "set.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%points%", String.valueOf(points))
+                    .replace("%progress%", String.valueOf(zVips.dbe.getPVPoints()))
+                    .replace("%goal%", String.valueOf(zVips.cfgu.pvipObjective()));
+        }
+
+        public String getAdd(int points) {
+            String path = formPath(cmds, getCmd(), "add.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%points%", String.valueOf(points))
+                    .replace("%progress%", String.valueOf(zVips.dbe.getPVPoints()))
+                    .replace("%goal%", String.valueOf(zVips.cfgu.pvipObjective()));
+        }
+
+        public String getRemove(int points) {
+            String path = formPath(cmds, getCmd(), "remove.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%points%", String.valueOf(points))
+                    .replace("%progress%", String.valueOf(zVips.dbe.getPVPoints()))
+                    .replace("%goal%", String.valueOf(zVips.cfgu.pvipObjective()));
+        }
+
+        public String getReset() {
+            String path = formPath(cmds, getCmd(), "reset.output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdPointsvipCommand())
+                    .replace("%progress%", String.valueOf(zVips.dbe.getPVPoints()))
+                    .replace("%goal%", String.valueOf(zVips.cfgu.pvipObjective()));
+        }
+    }
+
+    public static class Givekey implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Givekey() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "givekey";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdGivekeyCommand());
+        }
+
+        public String getOutput(CommandsMSG cmdm, OfflinePlayer p, KEY key) {
+            String path = formPath(cmds, getCmd(), "output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdGivekeyCommand())
+                    .replace("%player%", p.getName())
+                    .replace("%key-information%", cmdm.getKeyInformation(key));
+        }
+    }
+
+    public static class Genkey implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Genkey() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "genkey";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdGenkeyCommand());
+        }
+
+        public String getOutput(CommandsMSG cmdm, KEY key) {
+            String path = formPath(cmds, getCmd(), "output");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdGenkeyCommand())
+                    .replace("%key-information%", cmdm.getKeyInformation(key));
+        }
+    }
+
+    public static class Listkeys implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Listkeys() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "listkeys";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            return null;
+        }
+
+        public String getOutput(CommandSender s, @Nullable OfflinePlayer p, List<KEY> keys) {
+            String path = p == null ? formPath(cmds, getCmd(), "output") : formPath(cmds, getCmd(), "output-player");
+            String path2 = p == null ? formPath(cmds, getCmd(), "server-keys")
+                    : s.hasPermission(zVips.cfgu.CmdListkeysOthersPermission()) ? formPath(cmds, getCmd(), "player-keys-admin") : formPath(cmds, getCmd(), "player-keys");
+            StringBuilder keysString = new StringBuilder();
+            for(KEY key : keys) {
+                if(keysString.length() == 0) {
+                    keysString = new StringBuilder(KeysUtils.parseString(this.cfg.getString(path2), key));
+                    continue;
+                }
+                keysString.append("\n").append(KeysUtils.parseString(this.cfg.getString(path2), key));
+            }
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdListkeysCommand())
+                    .replace("%player%", p == null ? "" : p.getName())
+                    .replace("%keys%", keysString.toString());
+        }
+
+        public String getOutputSelf(Player p, List<KEY> keys) {
+            String path = formPath(cmds, getCmd(), "output-you");
+            String path2 = p.hasPermission(zVips.cfgu.CmdListkeysOthersPermission()) ? formPath(cmds, getCmd(), "player-keys-admin") : formPath(cmds, getCmd(), "player-keys");
+            StringBuilder keysString = new StringBuilder();
+            for(KEY key : keys) {
+                if(keysString.length() == 0) {
+                    keysString = new StringBuilder(KeysUtils.parseString(this.cfg.getString(path2), key));
+                    continue;
+                }
+                keysString.append("\n").append(KeysUtils.parseString(this.cfg.getString(path2), key));
+            }
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdListkeysCommand())
+                    .replace("%keys%", keysString.toString());
+        }
+    }
+
+    public static class Usekey implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Usekey() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "usekey";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            return null;
+        }
+
+        public String getUsage(CommandSender s) {
+            String path = s.hasPermission(zVips.cfgu.CmdUsekeyOthersPermission()) ? formPath(cmds, getCmd(), "usage-admin") : formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdUsekeyCommand());
+        }
+
+        public String getOutput(OfflinePlayer p, KEY key) {
+            String path = formPath(cmds, getCmd(), "output-admin");
+            return KeysUtils.parseString(
+                    this.cfg.getString(path)
+                            .replace("%command%", zVips.cfgu.CmdTransferkeyCommand())
+                            .replace("%player%", p.getName())
+                    , key);
+        }
+    }
+
+    public static class Transferkey implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Transferkey() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "transferkey";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdTransferkeyCommand());
+        }
+
+        public String getOutput(OfflinePlayer p, KEY key) {
+            String path = formPath(cmds, getCmd(), "output");
+            return KeysUtils.parseString(
+                    this.cfg.getString(path)
+                            .replace("%command%", zVips.cfgu.CmdTransferkeyCommand())
+                            .replace("%player%", p.getName())
+                    , key);
+        }
+    }
+
+    public static class Deletekey implements Commands {
+        public final YamlConfiguration cfg;
+
+        public Deletekey() {
+            this.cfg = LanguageUtils.getConfigFile();
+        }
+
+        public String getCmd() {
+            return "deletekey";
+        }
+
+        public String getOutput() {
+            return null;
+        }
+
+        public String getUsage() {
+            String path = formPath(cmds, getCmd(), "usage");
+            return this.cfg.getString(path)
+                    .replace("%command%", zVips.cfgu.CmdDeletekeyCommand());
+        }
+
+        public String getOutput(KEY key) {
+            String path = formPath(cmds, getCmd(), "output");
+            return KeysUtils.parseString(
+                    this.cfg.getString(path)
+                            .replace("%command%", zVips.cfgu.CmdDeletekeyCommand())
+                    , key);
         }
     }
 
@@ -430,31 +566,6 @@ public class LanguageUtils extends ConfigUtils {
 
         public HooksMSG() {
             this.cfg = LanguageUtils.getConfigFile();
-        }
-
-        public String getWorldGuardSendTpa() {
-            String path = formPath(hooks, worldguard, "send-tpa-flag");
-            return this.cfg.getString(path);
-        }
-
-        public String getWorldGuardAcceptTpa() {
-            String path = formPath(hooks, worldguard, "accept-tpa-flag");
-            return this.cfg.getString(path);
-        }
-
-        public String getWorldGuardDenyTpa() {
-            String path = formPath(hooks, worldguard, "deny-tpa-flag");
-            return this.cfg.getString(path);
-        }
-
-        public String getWorldGuardCancelTpa() {
-            String path = formPath(hooks, worldguard, "cancel-tpa-flag");
-            return this.cfg.getString(path);
-        }
-
-        public String getWorldGuardUseTpa() {
-            String path = formPath(hooks, worldguard, "use-tpa-flag");
-            return this.cfg.getString(path);
         }
 
         public String getVaultCantAfford(Float cost) {
@@ -481,14 +592,37 @@ public class LanguageUtils extends ConfigUtils {
             return this.cfg.getString(path);
         }
 
+        public String getCantFindVIP() {
+            String path = formPath(cmds, "cant-find-vip");
+            return this.cfg.getString(path);
+        }
+
+        public String getCantFindKEY() {
+            String path = formPath(cmds, "cant-find-key");
+            return this.cfg.getString(path);
+        }
+
         public String getOnlyExecutableByPlayers() {
             String path = formPath(cmds, "only-executable-by-players");
             return this.cfg.getString(path);
         }
 
-        public String getMoreThanOneRequest() {
-            String path = formPath(cmds, "more-than-one-request");
+        public String getStringNotANumber() {
+            String path = formPath(cmds, "string-not-a-number");
             return this.cfg.getString(path);
+        }
+
+        public String getInvalidDuration() {
+            String path = formPath(cmds, "invalid-duration");
+            return this.cfg.getString(path);
+        }
+
+        public String getKeyInformation(KEY key) {
+            String keyinfopath = "key-information";
+            String message = this.cfg.getString(formPath(cmds, keyinfopath, "message"))
+                    .replace("%1color%", this.cfg.getString(formPath(cmds, keyinfopath, "1color")))
+                    .replace("%2color%", this.cfg.getString(formPath(cmds, keyinfopath, "2color")));
+            return KeysUtils.parseString(message, key);
         }
     }
 
@@ -530,11 +664,7 @@ public class LanguageUtils extends ConfigUtils {
 
         static String getText(CommandSender s, String text) {
             text = transform(text
-                    .replace("%prefix%", zTPA.cfgu.prefix())
-                    .replace("%command-tpa%", zTPA.cfgu.CmdTpaCommand())
-                    .replace("%command-tpaccept%", zTPA.cfgu.CmdTpacceptCommand())
-                    .replace("%command-tpdeny%", zTPA.cfgu.CmdTpdenyCommand())
-                    .replace("%command-tpacancel%", zTPA.cfgu.CmdTpacancelCommand()));
+                    .replace("%prefix%", zVips.cfgu.prefix()));
             if(s instanceof Player) {
                 Player p = (Player)s;
                 text = transform(p, text);

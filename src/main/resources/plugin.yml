@@ -1,6 +1,13 @@
 name: zVips
-version: '1.0'
+version: ${version}
+description: ${description}
 main: me.yleoft.zVips.zVips
-api-version: '1.21'
-load: STARTUP
-authors: [ yLeoft ]
+author: yLeoft
+website: ${url}
+api-version: "1.13"
+softdepend:
+  - PlaceholderAPI
+  - Vault
+folia-supported: true
+commands: {}
+permissions: {}

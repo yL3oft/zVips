@@ -1,7 +1,6 @@
 package me.yleoft.zVips.completers;
 
 import me.yleoft.zVips.utils.ConfigUtils;
-import me.yleoft.zVips.utils.VIPUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ListkeysCompleter extends ConfigUtils implements TabCompleter {
+public class TransferkeyCompleter extends ConfigUtils implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
@@ -23,10 +22,9 @@ public class ListkeysCompleter extends ConfigUtils implements TabCompleter {
         if (!(s instanceof Player) || !s.hasPermission(CmdGivekeyPermission()))
             return completions;
         Player p = (Player)s;
-        if (args.length == 1) {
-            commands.add("server");
+        if (args.length == 2) {
             Bukkit.getOnlinePlayers().forEach(on -> commands.add(on.getName()));
-            StringUtil.copyPartialMatches(args[0], commands, completions);
+            StringUtil.copyPartialMatches(args[1], commands, completions);
         }
         Collections.sort(commands);
         return completions;

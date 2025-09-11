@@ -1,6 +1,8 @@
 package me.yleoft.zVips.commands;
 
 import me.yleoft.zAPI.utils.PlayerUtils;
+import me.yleoft.zAPI.utils.StringUtils;
+import me.yleoft.zVips.constructors.KEY;
 import me.yleoft.zVips.utils.ConfigUtils;
 import me.yleoft.zVips.utils.LanguageUtils;
 import me.yleoft.zVips.zVips;
@@ -11,35 +13,38 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ListkeysCommand extends ConfigUtils implements CommandExecutor {
+public class DeletekeyCommand extends ConfigUtils implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
         Player p = null;
         LanguageUtils.CommandsMSG cmdm = new LanguageUtils.CommandsMSG();
         if (s instanceof Player) {
             p = (Player) s;
-            if (!p.hasPermission(CmdListkeysPermission())) {
+            if (!p.hasPermission(CmdDeletekeyPermission())) {
                 cmdm.sendMsg(p, cmdm.getNoPermission());
                 return false;
             }
         }
 
-        LanguageUtils.Listkeys lang = new LanguageUtils.Listkeys();
+        LanguageUtils.Deletekey lang = new LanguageUtils.Deletekey();
 
-        OfflinePlayer t = null;
-        if(args.length >= 1 && (p == null || p.hasPermission(CmdListkeysOthersPermission()))) {
-            if(args[0].equalsIgnoreCase("server")) {
-                lang.sendMsg(s, lang.getOutput(s, null, zVips.dbe.getKeys()));
-                return true;
-            }
-            t = PlayerUtils.getOfflinePlayer(args[0]);
-            if(t == null || !t.hasPlayedBefore()) {
-                lang.sendMsg(s, cmdm.getCantFindPlayer());
+        if(args.length == 1) {
+            String idS = args[0];
+            if(!StringUtils.isInteger(idS)) {
+                lang.sendMsg(s, cmdm.getStringNotANumber());
                 return false;
             }
-            lang.sendMsg(s, lang.getOutput(s, t, zVips.dbe.getKeys(t)));
+            int id = Integer.parseInt(idS);
+            KEY key = zVips.dbe.getKey(id);
+            if(key == null) {
+                lang.sendMsg(s, cmdm.getCantFindKEY());
+                return false;
+            }
+            zVips.dbe.deleteKey(id);
+            lang.sendMsg(s, lang.getOutput(key));
             return true;
         }
-        lang.sendMsg(s, lang.getOutputSelf(p, zVips.dbe.getKeys(p)));
+
+        lang.sendMsg(s, lang.getUsage());
         return false;
     }
 }

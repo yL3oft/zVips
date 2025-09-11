@@ -1,4 +1,4 @@
-package com.zTPA.api.event.player;
+package com.zvips.api.event.player;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

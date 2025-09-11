@@ -1,0 +1,17 @@
+displayname: "ELITE"
+default-duration: 30d
+points: 24
+# Hint: Using [<chance>] before the command will give the command a chance to be executed (Chance = 0.0 to 100.0)
+activation-commands:
+  - "[CON] eco giveall 5000"
+  # - "[30.0] [CON] whatever"
+announce:
+  sound: ''
+  actionbar: '&7%player%&b just activated &eVIP %displayname%&b!'
+  title: '&f%player%&b activated &eVIP %displayname%<subline>&bThank you!!'
+  chat: |
+    &r
+    &a&lVIPS
+    &bPlayer &7%player% &bjust
+    &bactivated &eVIP %displayname%&b!
+    &r

@@ -1,4 +1,4 @@
-package me.yleoft.zHomes.storage;
+package me.yleoft.zVips.storage;
 
 public enum database_type {
 

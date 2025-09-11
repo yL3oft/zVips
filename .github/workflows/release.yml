@@ -1,10 +1,6 @@
-name: Compile Project Test
+name: Release Version
 
 on:
-  push:
-    branches: [ main, dev ]
-  pull_request:
-    branches: [ main, dev ]
   workflow_dispatch:
 
 jobs:
@@ -30,7 +26,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Compile and Test with Maven
-        run: mvn clean install -DskipTests=false -Dgpg.skip=true
+        run: mvn clean install
 
       - name: Get project version
         id: get_version
@@ -38,8 +34,27 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload target artifact
-        uses: actions/upload-artifact@v4
+      - name: Get final JAR name
+        id: get_jar
+        run: |
+          JAR_FILE=$(mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout).jar
+          echo "jar=$JAR_FILE" >> $GITHUB_OUTPUT
+
+      - name: Read changelog
+        id: changelog
+        run: |
+          content=$(cat ./changelog.md)
+          # Save to step output
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.get_version.outputs.version }}
           name: zVips ${{ steps.get_version.outputs.version }}
-          path: target/
+          body_path: changelog.md
+          files: target/${{ steps.get_jar.outputs.jar }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

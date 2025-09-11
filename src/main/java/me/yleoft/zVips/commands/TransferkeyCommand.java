@@ -6,6 +6,7 @@ import me.yleoft.zVips.constructors.KEY;
 import me.yleoft.zVips.constructors.VIP;
 import me.yleoft.zVips.utils.ConfigUtils;
 import me.yleoft.zVips.utils.LanguageUtils;
+import me.yleoft.zVips.zVips;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,50 +16,40 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.yleoft.zVips.utils.VIPUtils.vipsCache;
 
-public class GenkeyCommand extends ConfigUtils implements CommandExecutor {
+public class TransferkeyCommand extends ConfigUtils implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender s, @NotNull Command cmd, @NotNull String label, String[] args) {
         Player p = null;
         LanguageUtils.CommandsMSG cmdm = new LanguageUtils.CommandsMSG();
         if (s instanceof Player) {
             p = (Player) s;
-            if (!p.hasPermission(CmdGenkeyPermission())) {
+            if (!p.hasPermission(CmdTransferkeyPermission())) {
                 cmdm.sendMsg(p, cmdm.getNoPermission());
                 return false;
             }
         }
 
-        LanguageUtils.Genkey lang = new LanguageUtils.Genkey();
+        LanguageUtils.Transferkey lang = new LanguageUtils.Transferkey();
 
-        if(args.length >= 1) {
-            String vipS = args[0];
-            if(!vipsCache.containsKey(vipS)) {
-                lang.sendMsg(s, cmdm.getCantFindVIP());
+        if(args.length == 2) {
+            String idS = args[0];
+            if(!StringUtils.isInteger(idS)) {
+                lang.sendMsg(s, cmdm.getStringNotANumber());
                 return false;
             }
-            VIP vip = new VIP(vipS);
-            long duration = vip.getDuration();
-            if(args.length >= 2) {
-                String durationS = args[1];
-                try {
-                    duration = StringUtils.parseAsTime(durationS);
-                }catch (Exception e) {
-                    lang.sendMsg(s, cmdm.getInvalidDuration());
-                    return false;
-                }
-            }
-            int uses = 1;
-            if(args.length >= 3) {
-                String usesS = args[2];
-                if(!StringUtils.isInteger(usesS)) {
-                    lang.sendMsg(s, cmdm.getStringNotANumber());
-                    return false;
-                }
-                uses = Integer.parseInt(usesS);
+            int id = Integer.parseInt(idS);
+            OfflinePlayer t = PlayerUtils.getOfflinePlayer(args[1]);
+            if(t == null || !t.hasPlayedBefore()) {
+                lang.sendMsg(s, cmdm.getCantFindPlayer());
+                return false;
             }
 
-            KEY key = new KEY(vip, duration, uses, null);
-            key.saveKey();
-            lang.sendMsg(s, lang.getOutput(cmdm, key));
+            KEY key = zVips.dbe.getKey(id);
+            if(key == null) {
+                lang.sendMsg(s, cmdm.getCantFindKEY());
+                return false;
+            }
+            zVips.dbe.transferKey(id, t);
+            lang.sendMsg(s, lang.getOutput(t, key));
             return true;
         }
 

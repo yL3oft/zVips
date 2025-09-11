@@ -1,4 +1,4 @@
-package com.zvips.api.event.player;
+package com.zvips.api.event;
 
 public enum BalanceChangeType {
 

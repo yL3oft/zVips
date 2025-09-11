@@ -1,100 +1,175 @@
-prefix: "&8[&4zTPA&8] "
+prefix: "&8[&4zVips&8] "
+
+# Edit your database config here
+database:
+  # Here you can define how to store the plugin data.
+  # OPTIONS:
+  # - H2 (Preferred over SQLite)
+  # - SQLite
+  # - MariaDB (Preferred over MySQL)
+  # - MySQL
+  # DEFAULT: H2
+  type: H2
+  host: localhost
+  port: 3306
+  database: db
+  username: root
+  password: pass
+  options:
+    useSSL: false
+    allowPublicKeyRetrieval: false
+  # -------------------- #
+  # WARNING: DO NOT CHANGE ANYTHING BELOW IF YOU DON'T KNOW WHAT YOU'RE DOING
+  pool-size: 10
+  table-prefix: zvips
 
 general:
   # Here you can define the language of the plugin, all languages can be found, edited and created on languages' directory.
   # DEFAULT OPTIONS: [en, pt-br, <custom>] --- DEFAULT: en
   language: "en"
-  # Define it the plugin should be updated automatically
-  # OPTIONS: [true, false] --- DEFAULT: true
-  auto-update: false
-  # Should players with permissions be notified about plugin updates upon joining?
-  # OPTIONS: [true, false] --- DEFAULT: true
-  announce-update: true
   # Here you can define if metrics should be on or off.
   # !WARNING: This option does not work with reload.
   # OPTIONS: [true, false] --- DEFAULT: true
   metrics: true
-
-tpa-options:
-  # Defines the expire time of the teleport requests in seconds.
-    # OPTIONS: [>=0 INT] --- DEFAULT: 120
-  expire-time: 120
-    # Should the plugin play an enderman warp sound when the player teleports to a home?
+  # Should the plugin log errors and important information?
   # OPTIONS: [true, false] --- DEFAULT: true
-  play-sound: true
+  enable-logs: true
 
-  # Tpa warmup options
-  warmup:
-    # This option defines if the warmup should be enabled or not.
-    # OPTIONS: [true, false] --- DEFAULT: true
-    enable: true
-    # Defines the time of the warmup in seconds.
-    # OPTIONS: [>=0 INT] --- DEFAULT: 5
-    time: 5
-    # Should the warmup be cancelled when the player moves?
-    # OPTIONS: [true, false] --- DEFAULT: true
-    cancel-on-move: false
-    # Should the warmup be shown in the actionbar?
-    # OPTIONS: [true, false] --- DEFAULT: true
-    show-on-actionbar: true
+vip-options:
+  # Ask the player for confirmation when using a key?
+  # OPTIONS: [true, false] --- DEFAULT: true
+  require-confirmation-for-key: true
+
+  # Should the plugin check if the player has an empty inventory when activating vips?
+  # OPTIONS: [true, false] --- DEFAULT: true
+  require-empty-inventory: true
+
+  # Should the plugin decrease the vip time even if not activated?
+  # OPTIONS: [true, false] --- DEFAULT: false
+  decrease-inactive-vips: false
+
+  # ! Every cooldown defined here is in seconds.
+  # OPTIONS: [>=0 INT]
+  cooldowns:
+    # Cooldown when changing between vips.
+    changevip: 600
+    # Cooldown when transferring vips to another player.
+    transferkey: 600
+
+party-vip:
+  # How many points the server need to accumulate to activate the party vip.
+  # OPTIONS: [>0 INT] --- DEFAULT: 250
+  objective: 250
+
+  activation:
+    # What commands should be executed when the party vip is activated
+    # Hint: Using [<chance>] before the command will give the command a chance to be executed (Chance = 0.0 to 100.0)
+    # OPTIONS: [String] --- DEFAULT: []
+    commands:
+      - "eco giveall 1000"
+      # - "[30.0] whatever"
 
 commands:
   # Mostly everything below needs a restart to apply
   main:
-    command: ztpa
+    command: zvips
     description: "The main command for the plugin"
-    permission: ztpa.command.main # True by default
+    permission: zvips.command.main # True by default
     cooldown: 0.0
     aliases: []
     # Sub command - Help
     help:
-      permission: "ztpa.command.main.help" # Only OP by default
+      permission: "zvips.command.main.help" # Only OP by default
     # Sub command - Version
     version:
-      permission: "ztpa.command.main.version" # True by default
-      update:
-        permission: "ztpa.command.main.version.update" # Only OP by default
+      permission: "zvips.command.main.version" # True by default
     # Sub command - Reload
     reload:
-      permission: "ztpa.command.main.reload" # Only OP by default
-  tpa:
-    command: tpa
-    description: "Teleport to a player"
-    permission: ztpa.command.tpa # True by default
-    cooldown: 0.0
-    aliases: []
-    command-cost: 0  # Requires Vault to work
-  tpaccept:
-    command: tpaccept
-    description: "Accept a teleport request"
-    permission: ztpa.command.tpaccept # True by default
-    cooldown: 0.0
-    aliases: []
-    command-cost: 0  # Requires Vault to work
-  tpdeny:
-    command: tpdeny
-    description: "Deny a teleport request"
-    permission: ztpa.command.tpdeny # True by default
+      permission: "zvips.command.main.reload" # Only OP by default
+    # Sub command - Converter
+    converter:
+      permission: "zvips.command.main.converter" # Only OP by default
+  pointsvip:
+    command: pointsvip
+    description: "Manage player's points vip"
+    permission: zvips.command.pointsvip # True by default
     cooldown: 0.0
     aliases:
-      - tpadeny
-    command-cost: 0  # Requires Vault to work
-  tpacancel:
-    command: tpacancel
-    description: "Cancel a teleport request"
-    permission: ztpa.command.tpcancel # True by default
+      - "pontosvip"
+    others:
+      permission: "zvips.command.pointsvip.others" # Only OP by default
+    # Sub command - Set/Give/Remove/Reset
+    manage:
+      permission: "zvips.command.pointsvip.manage" # Only OP by default
+  partyvip:
+    command: partyvip
+    description: "Manage party vip progress"
+    permission: zvips.command.partyvip # True by default
     cooldown: 0.0
     aliases:
-      - tpcancel
-    command-cost: 0  # Requires Vault to work
+      - "vipparty"
+    # Sub command - Set/Add/Remove/Reset
+    manage:
+      permission: "zvips.command.partyvip.manage" # Only OP by default
+  givekey:
+    command: givekey
+    description: "Give keys to players"
+    permission: zvips.command.givekey # Only OP by default
+    cooldown: 0.0
+    aliases:
+      - "darkey"
+  genkey:
+    command: genkey
+    description: "Generate server keys"
+    permission: zvips.command.genkey # Only OP by default
+    cooldown: 0.0
+    aliases:
+      - "gerarkey"
+  listkeys:
+    command: listkeys
+    description: "List keys"
+    permission: zvips.command.listkeys # True by default
+    cooldown: 0.0
+    aliases:
+      - "listarkeys"
+    # See other player keys or server keys
+    others:
+      permission: zvips.command.listkeys.others # Only OP by default
+  usekey:
+    command: usekey
+    description: "Use a key"
+    permission: zvips.command.usekey # True by default
+    cooldown: 0.0
+    aliases:
+      - "usarkey"
+    # Use a key on a player
+    others:
+      permission: zvips.command.usekey.others # Only OP by default
+  transferkey:
+    command: transferkey
+    description: "Transfer a key to a player"
+    permission: zvips.command.transferkey # Only OP by default
+    cooldown: 0.0
+    aliases:
+      - "transferirkey"
+  deletekey:
+    command: deletekey
+    description: "Deletes a key from the database"
+    permission: zvips.command.deletekey # Only OP by default
+    cooldown: 0.0
+    aliases:
+      - "deletarkey"
 
 # In this section you can define the permissions for the plugin
 # Permissions for commands can be found on the commands section
 permissions:
   bypass:
-    # This permission allows the player to bypass the teleportation warmup
-    # Default: zhomes.bypass.warmup
-    warmup: "ztpa.bypass.warmup" # Only OP by default
+    # This permission allows the player to bypass changevip cooldowns
+    # Default: zvips.bypass.changevip
+    changevip: "zvips.bypass.changevip" # Only OP by default
+    # This permission allows the player to bypass transferkey cooldowns
+    # Default: zvips.bypass.transferkey
+    transferkey: "zvips.bypass.transferkey" # Only OP by default
     # This permission allows the player to bypass the cost of the command
     # Default: %command_permission%.command-cost
     command-cost: "%command_permission%.bypass.command-cost" # Only OP by default

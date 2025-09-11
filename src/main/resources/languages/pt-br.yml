@@ -1,20 +1,7 @@
 # Aqui você pode gerenciar mensagens de integração
 hooks:
-  worldguard:
-    send-tpa-flag: "%prefix%&cVocê não pode enviar um pedido de teleporte aqui."
-    accept-tpa-flag: "%prefix%&cVocê não pode aceitar um pedido de teleporte aqui."
-    deny-tpa-flag: "%prefix%&cVocê não pode recusar um pedido de teleporte aqui."
-    cancel-tpa-flag: "%prefix%&cVocê não pode cancelar um pedido de teleporte aqui."
-    use-tpa-flag: "%prefix%&cVocê não pode usar o comando de teleporte aqui."
   vault:
     cant-afford-command: "%prefix%&cVocê precisa de &6$%cost% &cpara executar este comando."
-
-# Mensagens relacionadas ao tempo de espera para teleporte
-teleport-warmup:
-  warmup: "%prefix%&aTeleportando em %time% segundos... Não se mova!"
-  warmup-actionbar: "&aTeleportando em %time% segundos..."
-  cancelled: "%prefix%&cVocê se moveu! Teleporte cancelado."
-  cancelled-actionbar: "&cVocê se moveu! Teleporte cancelado."
 
 # Mensagens relacionadas a comandos
 commands:
@@ -22,8 +9,22 @@ commands:
   no-permission: "%prefix%&cVocê não tem permissão para executar este comando."
   in-cooldown: "%prefix%&cVocê deve esperar %timeleft% segundos antes de usar este comando novamente."
   cant-find-player: "%prefix%&cEste jogador não foi encontrado."
+  cant-find-vip: "%prefix%&cEsse VIP não foi encontrado."
+  cant-find-key: "%prefix%&cEssa Key não foi encontrada."
   only-executable-by-players: "%prefix%&cEste comando só pode ser executado por jogadores."
-  more-than-one-request: "%prefix%&cVocê tem mais de um pedido de teleporte, por favor especifique o jogador do qual você deseja aceitar/recusar o pedido."
+  string-not-a-number: "%prefix%&cPor favor, insira um número válido."
+  invalid-duration: "%prefix%&cPor favor, insira uma duração válida (30d, 1d, 1h...)."
+
+  key-information:
+    1color: "&6"
+    2color: "&a"
+    message: |-
+      %1color%Key: %2color%%key%
+      %1color%ID: %2color%%id%
+      %1color%VIP: %2color%%vip%
+      %1color%Duração: %2color%%duration_formatted%
+      %1color%Usos: %2color%%uses%
+      %1color%Dono: %2color%%owner%
 
   # Aqui embaixo vai achar mensagens especificas de alguns comandos.
   main:
@@ -39,9 +40,6 @@ commands:
         &c-> &e/%command% &a(version|ver)
     version:
       output: "%prefix%&bVersão atual: &a%version%"
-      update:
-        output: "%prefix%&azAPI foi atualizado para a versão mais recente &e(%update%)&a, reinicie o servidor para aplicar as alterações."
-        no-update: "%prefix%&aVocê já está usando a versão mais recente do zAPI."
     reload:
       usage: |-
         %prefix%&bUsos de &e/%command% &a(reload|rl)&b:
@@ -55,32 +53,89 @@ commands:
         output: |-
           %prefix%&aAs linguas do plugin foram recarregadas em &b%time%ms!
           &7Nota: Isso não ira recarregar a lingua no config.yml, use '/%command% reload config' para isso.
-  tpa:
-    usage: "%prefix% &c-> &e/%command% (Jogador)"
-    yourself: "%prefix%&cVocê não pode enviar um pedido de teleporte para si mesmo."
-    already-requested: "%prefix%&cVocê já enviou um pedido de teleporte para &e%player%&c."
+    converter:
+      usage: |-
+        %prefix%&bUsos de &e/%command% &aconverter&b:
+        &c-> &e/%command% &aconverter sqlitetoh2
+        &c-> &e/%command% &aconverter sqlitetomysql
+        &c-> &e/%command% &aconverter sqlitetomariadb
+        &c-> &e/%command% &aconverter mysqltosqlite
+        &c-> &e/%command% &aconverter mysqltoh2
+        &c-> &e/%command% &aconverter mariadbtosqlite
+        &c-> &e/%command% &aconverter mariadbtoh2
+        &c-> &e/%command% &aconverter h2tosqlite
+        &c-> &e/%command% &aconverter h2tomysql
+        &c-> &e/%command% &aconverter h2tomariadb
+      output: "%prefix%&aTodos dados foram convertidos!"
+      error: "%prefix%&cAlgo deu errado na conversão dos dados, por favor verifique o console do seu servidor."
+  pointsvip:
+    usage: |-
+      %prefix%&bUsos de &e/%command%&b:
+      &c-> &e/%command% &6[player]
+      &c-> &e/%command% &adefinir (player) (points)
+      &c-> &e/%command% &aadicionar (player) (points)
+      &c-> &e/%command% &aremover (player) (points)
+      &c-> &e/%command% &aresetar (player)
+    output: "%prefix%&aVocê tem &b%points% &apontos vip."
+    others:
+      output: "%prefix%&a%player% tem &b%points% &apontos vip."
+    set:
+      output: "%prefix%&aOs pontos de %player% foram definidos para &b%points%&a."
+    add:
+      output: "%prefix%&aAdicionado &b%points% &apontos vip a %player%."
+    remove:
+      output: "%prefix%&aRemovido &b%points% &apontos vip de %player%."
+    reset:
+      output: "%prefix%&aOs pontos vip de %player% foram resetados."
+  partyvip:
+    usage: |-
+      %prefix%&bUsos de &e/%command%&b:
+      &c-> &e/%command%
+      &c-> &e/%command% &adefinir (points)
+      &c-> &e/%command% &aadicionar (points)
+      &c-> &e/%command% &aremover (points)
+      &c-> &e/%command% &aresetar
+    output: "%prefix%&aProgresso atual da party vip: &b%points%/%goal%&a."
+    set:
+      output: "%prefix%&aProgresso da party vip definido para &b%points%&a."
+    add:
+      output: "%prefix%&a%points% foi adicionado ao progresso da party vip que está agora em: &b%points%/&b%goal%&a."
+    remove:
+      output: "%prefix%&a%points% foi removido do progresso da party vip que está agora em: &b%points%/&b%goal%&a."
+    reset:
+      output: "%prefix%&aProgresso da party vip resetado!"
+  givekey:
+    usage: "%prefix%&c-> /givekey (Jogador) (VIP) [Duração] [Usos]"
     output: |-
-      &a
-      &aPedido de teleporte enviado para &e%player%
-      &aPara cancelar, use &e/%command-tpacancel%
-      &a
-    request-received: |-
-      &a
-      &aVocê recebeu um pedido de teleporte de &e%player%
-      &aPara aceitar, use &e/%command-tpaccept%
-      &aPara recusar, use &e/%command-tpdeny%
-      &aEste pedido irá expirar em &c%time% segundos
-      &a
-  tpaccept:
-    output: "%prefix%&aPedido de teleporte de &e%player%&a aceito."
-    no-request: "%prefix%&cVocê não tem nenhum pedido de teleporte para aceitar."
-    no-request-from: "%prefix%&cVocê não tem nenhum pedido de teleporte de &e%player%&c."
-  tpdeny:
-    output: "%prefix%&aPedido de teleporte de &e%player%&a recusado."
-    no-request: "%prefix%&cVocê não tem nenhum pedido de teleporte para recusar."
-    no-request-from: "%prefix%&cVocê não tem nenhum pedido de teleporte de &e%player%&c."
-  tpacancel:
-    output: "%prefix%&aTodos os pedidos de teleporte foram cancelados."
-    output-to: "%prefix%&aPedido de teleporte para &e%player%&a cancelado."
-    no-request: "%prefix%&cVocê não tem nenhum pedido de teleporte para cancelar."
-    no-request-to: "%prefix%&cVocê não tem nenhum pedido de teleporte para &e%player%&c."
+      %prefix%&aChave dada a %player%:
+      %key-information%
+  genkey:
+    usage: "%prefix%&c-> /genkey (VIP) [Duração] [Usos]"
+    output: |-
+      %prefix%&aCriada nova chave do servidor:
+      %key-information%
+  listkeys:
+    usage: "%prefix%&c-> /listkeys [Jogador]"
+    output: |-
+      %prefix%&dTodas as chaves do servidor:
+      %server-keys%
+    output-player: |-
+      %prefix%&dChaves de %player%:
+      %player-keys%
+    output-you: |-
+      %prefix%&dSuas chaves:
+      %keys%
+    server-keys: "&d-> %key% &7(ID: %id%, VIP: %vip%, Duração: %duration_formatted%, Usos: %uses%)"
+    player-keys: "&d-> %key% &7(VIP: %vip%, Duração: %duration_formatted%, Usos: %uses%)"
+    player-keys-admin: "&d-> %key% &7(ID: %id%, VIP: %vip%, Duração: %duration_formatted%, Usos: %uses%)"
+  usekey:
+    usage: "%prefix%&c-> /usekey (Chave)"
+    usage-admin: "%prefix%&c-> /usekey (Chave) [Jogador]"
+    # Output está dentro do arquivo vip da CHAVE
+    output-admin: "%prefix%&aFez &e%player% &ausar a chave &b%key%"
+  transferkey:
+    usage: "%prefix%&c-> /transferkey (ID) (Jogador)"
+    output: "%prefix%&aChave &b%key% &atransferida para &e%player%"
+  deletekey:
+    usage: "%prefix%&c-> /deletekey (ID)"
+    output: "%prefix%&aChave deletada."
