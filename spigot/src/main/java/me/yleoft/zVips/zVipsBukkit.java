@@ -158,7 +158,7 @@ public final class zVipsBukkit extends JavaPlugin {
         );
         dbe.createTable(
                 db.databaseTable3(),
-                "(ID INT AUTO_INCREMENT, UUID VARCHAR(36) NOT NULL, VIP VARCHAR(30), EXPIRE BIGINT NOT NULL DEFAULT 0 CHECK (EXPIRE >= 0), LASTUPDATE BIGINT NOT NULL DEFAULT 0 CHECK (DURATION >= 0), PRIMARY KEY (ID))"
+                "(ID INT AUTO_INCREMENT, UUID VARCHAR(36) NOT NULL, VIP VARCHAR(30), EXPIRE BIGINT NOT NULL DEFAULT 0 CHECK (EXPIRE >= 0), LASTUPDATE BIGINT NOT NULL DEFAULT 0 CHECK (LASTUPDATE >= 0), PRIMARY KEY (ID))"
         );
         dbe.createTable(
                 db.databaseTable4(),

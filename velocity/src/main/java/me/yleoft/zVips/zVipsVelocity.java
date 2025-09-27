@@ -19,7 +19,7 @@ public class zVipsVelocity {
     @Inject private Logger logger;
     @Inject private ProxyServer proxyServer;
 
-    public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from("zvips:main");
+    public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from("zvips:update");
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
