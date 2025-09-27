@@ -1,0 +1,13 @@
+name: zVipsBukkit
+version: ${version}
+description: ${description}
+main: me.yleoft.zVips.zVipsBukkit
+author: yLeoft
+website: ${url}
+api-version: "1.13"
+softdepend:
+  - PlaceholderAPI
+  - Vault
+folia-supported: true
+commands: {}
+permissions: {}
