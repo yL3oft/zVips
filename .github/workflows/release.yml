@@ -34,9 +34,17 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Get final JAR name
-        id: get_jar
+      - name: Get Spigot JAR name
+        id: get_spigot_jar
         run: |
+          cd spigot
+          JAR_FILE=$(mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout).jar
+          echo "jar=$JAR_FILE" >> $GITHUB_OUTPUT
+
+      - name: Get Velocity JAR name
+        id: get_velocity_jar
+        run: |
+          cd velocity
           JAR_FILE=$(mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout).jar
           echo "jar=$JAR_FILE" >> $GITHUB_OUTPUT
 
@@ -55,6 +63,8 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.version }}
           name: zVips ${{ steps.get_version.outputs.version }}
           body_path: changelog.md
-          files: target/${{ steps.get_jar.outputs.jar }}
+          files: |
+            spigot/target/${{ steps.get_spigot_jar.outputs.jar }}
+            velocity/target/${{ steps.get_velocity_jar.outputs.jar }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -35,5 +35,5 @@ jobs:
           personal_token: ${{ secrets.ACTIONS_DEPLOY_TOKEN }}
           external_repository: yL3oft/zPlugins
           publish_branch: gh-pages
-          publish_dir: target/reports/apidocs
+          publish_dir: spigot/target/reports/apidocs
           destination_dir: zVips/javadocs

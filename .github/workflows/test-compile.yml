@@ -30,7 +30,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Compile and Test with Maven
-        run: mvn clean install -DskipTests=false -Dgpg.skip=true
+        run: mvn clean install
 
       - name: Get project version
         id: get_version
@@ -38,8 +38,14 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload target artifact
+      - name: Upload Spigot artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zVips ${{ steps.get_version.outputs.version }}
-          path: target/
+          name: zVips-Spigot-${{ steps.get_version.outputs.version }}
+          path: spigot/target/
+
+      - name: Upload Velocity artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zVips-Velocity-${{ steps.get_version.outputs.version }}
+          path: velocity/target/
